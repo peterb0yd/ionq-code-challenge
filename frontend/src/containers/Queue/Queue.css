@@ -1,0 +1,9 @@
+
+.Queue {
+
+}
+
+.Queue .job-list {
+  display: flex;
+  align-items: center;
+}

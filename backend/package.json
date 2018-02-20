@@ -1,0 +1,20 @@
+{
+  "name": "backend",
+  "version": "1.0.0",
+  "description": "Code challenge for IonQ",
+  "main": "server.js",
+  "dependencies": {
+    "boom": "^7.1.1",
+    "hapi": "^17.2.0",
+    "level": "^3.0.0",
+    "moment": "^2.20.1",
+    "uuid": "^3.2.1"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node src/server.js"
+  },
+  "author": "Peter Boyd",
+  "license": "ISC"
+}
