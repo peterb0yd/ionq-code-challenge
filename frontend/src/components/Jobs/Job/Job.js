@@ -48,9 +48,6 @@ class Job extends Component {
         break
       case jobStatus.IN_PROGRESS:
         classList.push('in-progress')
-        if (this.props.paused) {
-          classList.push('paused')
-        }
         jobNumberHTML = <p className="jobNumber">Job: {this.pad(this.props.jobIndex)}</p>
         break
       case jobStatus.CANCELED:
@@ -64,11 +61,11 @@ class Job extends Component {
     }
 
     const className = classList.join(' ')
-    const status = this.props.paused ? 'paused' : this.props.status
+    // const status = this.props.paused ? 'paused' : this.props.status
 
     return (
       <div className={className}>
-        <p className="status">{status}</p>
+        <p className="status">{this.props.status}</p>
         <h2>{this.props.name}</h2>
         <h4>File: {this.props.program}</h4>
         <p className="time">{moment(this.props.submissionTime).format('lll')}</p>

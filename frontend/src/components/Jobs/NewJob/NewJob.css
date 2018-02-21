@@ -55,6 +55,15 @@
   border: 5px solid hsl(0, 0%, 82%);
 }
 
+.NewJob input[type='submit']:disabled {
+  cursor: default;
+  background-color: hsl(0, 0%, 70%);
+}
+
+.NewJob input[type='submit']:disabled:hover {
+    background-color: hsl(0, 0%, 70%);
+}
+
 .NewJob input[type='submit']:hover {
   background-color: hsl(207, 90%, 64%);
 }

@@ -46,13 +46,14 @@ class NewJob extends Component {
 
   render() {
     return (
-      <div className="NewJob">
+      <div className='NewJob'>
         <h2>Create a New Job</h2>
         <form>
           <div className="form-row">
             <label>Name</label>
             <input
               type="text"
+              disabled={this.props.queueLocked}
               placeholder="name of this job..."
               value={this.state.jobData.name}
               onChange={e => this.nameChangedHandler(e)} />
@@ -61,6 +62,7 @@ class NewJob extends Component {
             <label>File</label>
             <input
               type="text"
+              disabled={this.props.queueLocked}
               placeholder="name of the program to run..."
               value={this.state.jobData.program}
               onChange={e => this.programChangedHandler(e)} />
@@ -69,6 +71,7 @@ class NewJob extends Component {
         <input
           type="submit"
           value="Submit Job"
+          disabled={this.props.queueLocked}
           onClick={e => this.submitJobHandler(e)} />
       </div>
     )

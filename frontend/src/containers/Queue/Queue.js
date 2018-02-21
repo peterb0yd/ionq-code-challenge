@@ -1,6 +1,5 @@
 import React, { Component } from 'react'
 import FlipMove from 'react-flip-move';
-import emptyIcon from '../../assets/empty_icon.svg'
 import { jobStatus } from '../../config'
 import axios from 'axios'
 import moment from 'moment'
@@ -12,17 +11,10 @@ import NewJob from '../../components/Jobs/NewJob/NewJob'
 import PauseModal from '../../components/PauseModal/PauseModal'
 
 class Queue extends Component {
-  currentTask = null
   state = {
     jobs: [],
     showModal: false,
-    queueLocked: false,
-    currentJob: {
-      task: null,
-      startTime: null,
-      timeLeft: null,
-      id: null
-    }
+    queueLocked: false
   }
 
   async componentDidMount() {
@@ -31,7 +23,9 @@ class Queue extends Component {
   }
 
   startQueue = async () => {
-    if (this.state.jobs.length == 0) return
+    if (this.state.jobs.length === 0) {
+      return
+    }
     const job = this.state.jobs[0]
     if (job.status === jobStatus.QUEUED) {
       try {
@@ -49,7 +43,7 @@ class Queue extends Component {
     try {
       await axios.post('/jobs', data)
       await this.fetchJobs()
-      if (!this.currentTask && !this.state.currentJob.id && !this.state.queueLocked) {
+      if (this.state.jobs[0].status === jobStatus.QUEUED) {
         this.startQueue()
       }
     } catch (e) {
@@ -69,7 +63,7 @@ class Queue extends Component {
         this.setState({ jobs: [] })
       }
     } catch (e) {
-      console.error(e)
+      // console.error(e) /** Comment out for testing **/
     }
   }
 
@@ -79,17 +73,7 @@ class Queue extends Component {
       await axios.patch(`/jobs/${job.id}`, body)
       await this.fetchJobs()
       if (job.status === jobStatus.IN_PROGRESS) {
-        clearTimeout(this.currentTask)
-        this.currentTask = null
-        this.setState({
-          currentJob: {
-            ...this.state.currentJob,
-            timeLeft: null,
-            id: null
-          }
-        }, () => {
-          this.startQueue()
-        })
+        this.startQueue()
       }
     } catch (e) {
       console.error(e)
@@ -98,56 +82,13 @@ class Queue extends Component {
 
   processJob = (id, processTime = null) => {
     const timeLeft = processTime ? processTime : 500 + Math.random() * 15000
-    console.log('starting time left: ', timeLeft)
 
-    this.setState({
-      currentJob: {
-        ...this.state.currentJob,
-        startTime: new Date(),
-        timeLeft,
-        id
-      }}, () => {
-
-      this.currentTask = setTimeout(async () => {
-        console.log('finished!')
-        clearTimeout(this.state.currentJob.task)
-        const body = { status: jobStatus.COMPLETED }
-        const job = await axios.patch(`/jobs/${id}`, body)
-        await this.fetchJobs()
-        this.currentTask = null
-        this.startQueue()
-        this.setState({
-          currentJob: {
-            ...this.state.currentJob,
-            timeLeft: null,
-            id: null
-          }
-        })
-      }, timeLeft)
-
-      if (this.state.queueLocked) {
-        this.pauseJob()
-      }
-    })
-  }
-
-  pauseJob = () => {
-    if (this.currentTask) {
-      clearTimeout(this.currentTask)
-      this.currentTask = null
-      const pauseTime = new Date()
-      const currentJob = {...this.state.currentJob}
-      const timeLeft = currentJob.timeLeft - (pauseTime - currentJob.startTime)
-
-      this.setState({
-        currentJob: {
-          ...currentJob,
-          timeLeft
-        }
-      }, () => {
-        console.log('paused with time left: ', timeLeft)
-      })
-    }
+    setTimeout(async () => {
+      const body = { status: jobStatus.COMPLETED }
+      await axios.patch(`/jobs/${id}`, body)
+      await this.fetchJobs()
+      this.startQueue()
+    }, timeLeft)
   }
 
   acceptedPauseHandler = () => {
@@ -155,7 +96,6 @@ class Queue extends Component {
       showModal: false,
       queueLocked: true
     })
-    this.pauseJob()
   }
 
   rejectedPauseHandler = () => {
@@ -165,10 +105,6 @@ class Queue extends Component {
   pauseButtonHandler = () => {
     if (this.state.queueLocked) {
       this.setState({ queueLocked: false })
-      if (this.state.currentJob.id) {
-        const { id, timeLeft } = this.state.currentJob
-        this.processJob(id, timeLeft)
-      }
     } else {
       this.setState({ showModal: true })
     }
@@ -190,7 +126,6 @@ class Queue extends Component {
             name={job.name}
             program={job.program}
             status={job.status}
-            paused={this.state.queueLocked}
             submissionTime={job.submissionTime}
             canceled={this.jobCanceledHandler}
             jobIndex={i+1} />
@@ -207,7 +142,9 @@ class Queue extends Component {
 
     return (
       <div className={queueClassName}>
-        <NewJob submitted={this.newJobHandler} />
+        <NewJob
+          submitted={this.newJobHandler}
+          queueLocked={this.state.queueLocked}/>
         <button
           className={pauseButtonClassName}
           onClick={this.pauseButtonHandler}>{pauseButtonText}</button>

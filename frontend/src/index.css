@@ -7,10 +7,6 @@ body {
   background-color: hsl(200, 20%, 95%);
 }
 
-body.no-scroll {
-  overflow: hidden;
-}
-
 h1, h2, h3, h4, p, label, a, input, textarea {
   font-family: 'Exo 2', sans-serif;
   margin: 0;
