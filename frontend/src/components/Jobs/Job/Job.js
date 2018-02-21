@@ -30,7 +30,7 @@ class Job extends Component {
 
   jobCanceledHandler = (event) => {
     event.preventDefault()
-    this.props.canceled(this.props.id)
+    this.props.canceled(this.props)
   }
 
   render() {

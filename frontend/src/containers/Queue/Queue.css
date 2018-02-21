@@ -1,8 +1,8 @@
 
 .Queue {
+  margin-top: 40px;
   width: 100vw;
   height: 100vh;
-  overflow-x: hidden;
 }
 
 .Queue.no-scroll {
@@ -14,8 +14,8 @@
   position: absolute;
   left: 0;
   top: 0;
-  width: 100%;
-  height: 100%;
+  width: 100vw;
+  height: 100vh;
   opacity: 0;
   z-index: 50;
   background-color: hsla(0, 100%, 100%, 0.8);
@@ -51,11 +51,11 @@
 }
 
 .Queue button.pause-queue.locked {
-  background-color: hsl(0, 32%, 46%);
+  background-color: hsl(188, 36%, 52%);
 }
 
 .Queue button.pause-queue.locked:hover {
-  background-color: hsl(0, 32%, 56%);
+  background-color: hsl(188, 36%, 62%);
 }
 
 .Queue h1.empty-queue {

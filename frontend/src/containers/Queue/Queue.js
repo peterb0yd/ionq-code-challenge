@@ -49,7 +49,7 @@ class Queue extends Component {
     try {
       await axios.post('/jobs', data)
       await this.fetchJobs()
-      if (!this.currentTask) {
+      if (!this.currentTask && !this.state.currentJob.id && !this.state.queueLocked) {
         this.startQueue()
       }
     } catch (e) {
@@ -73,11 +73,24 @@ class Queue extends Component {
     }
   }
 
-  jobCanceledHandler = async (id) => {
+  jobCanceledHandler = async (job) => {
     try {
       const body = { status: jobStatus.CANCELED }
-      await axios.patch(`/jobs/${id}`, body)
+      await axios.patch(`/jobs/${job.id}`, body)
       await this.fetchJobs()
+      if (job.status === jobStatus.IN_PROGRESS) {
+        clearTimeout(this.currentTask)
+        this.currentTask = null
+        this.setState({
+          currentJob: {
+            ...this.state.currentJob,
+            timeLeft: null,
+            id: null
+          }
+        }, () => {
+          this.startQueue()
+        })
+      }
     } catch (e) {
       console.error(e)
     }
@@ -93,31 +106,48 @@ class Queue extends Component {
         startTime: new Date(),
         timeLeft,
         id
+      }}, () => {
+
+      this.currentTask = setTimeout(async () => {
+        console.log('finished!')
+        clearTimeout(this.state.currentJob.task)
+        const body = { status: jobStatus.COMPLETED }
+        const job = await axios.patch(`/jobs/${id}`, body)
+        await this.fetchJobs()
+        this.currentTask = null
+        this.startQueue()
+        this.setState({
+          currentJob: {
+            ...this.state.currentJob,
+            timeLeft: null,
+            id: null
+          }
+        })
+      }, timeLeft)
+
+      if (this.state.queueLocked) {
+        this.pauseJob()
       }
     })
+  }
 
-    // *** FIX SET STATE IT IS ASYNC !!! ***
-
-    this.currentTask = setTimeout(async () => {
-      console.log('finished!')
-      clearTimeout(this.state.currentJob.task)
-      const body = { status: jobStatus.COMPLETED }
-      const job = await axios.patch(`/jobs/${id}`, body)
-      await this.fetchJobs()
-      this.startQueue()
-
-      // *** FIX SET STATE IT IS ASYNC !!! ***
-
+  pauseJob = () => {
+    if (this.currentTask) {
+      clearTimeout(this.currentTask)
+      this.currentTask = null
+      const pauseTime = new Date()
+      const currentJob = {...this.state.currentJob}
+      const timeLeft = currentJob.timeLeft - (pauseTime - currentJob.startTime)
 
       this.setState({
         currentJob: {
-          ...this.state.currentJob,
-          timeLeft: null,
-          id: null
+          ...currentJob,
+          timeLeft
         }
+      }, () => {
+        console.log('paused with time left: ', timeLeft)
       })
-      this.currentTask = null
-    }, timeLeft)
+    }
   }
 
   acceptedPauseHandler = () => {
@@ -125,25 +155,7 @@ class Queue extends Component {
       showModal: false,
       queueLocked: true
     })
-    if (this.currentTask) {
-      clearTimeout(this.currentTask)
-      this.currentTask = null
-      const pauseTime = new Date()
-      const currentJob = {...this.state.currentJob}
-      console.log(currentJob)
-      const timeLeft = currentJob.timeLeft - (pauseTime - currentJob.startTime)
-
-      // *** FIX SET STATE IT IS ASYNC !!! ***
-
-      this.setState({
-        currentJob: {
-          ...currentJob,
-          timeLeft
-        }
-      })
-      console.log('paused time left: ', this.state.currentJob.timeLeft)
-      console.log('const timeleft: ', timeLeft)
-    }
+    this.pauseJob()
   }
 
   rejectedPauseHandler = () => {
