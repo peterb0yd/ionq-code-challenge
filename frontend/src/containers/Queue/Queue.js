@@ -1,12 +1,12 @@
 import React, { Component } from 'react'
-import FlipMove from 'react-flip-move';
-import { jobStatus } from '../../config'
 import axios from 'axios'
 import moment from 'moment'
 import _ from 'lodash'
+
+import { jobStatus } from '../../config'
 import './Queue.css'
 
-import Job from '../../components/Jobs/Job/Job'
+import Jobs from '../../components/Jobs/Jobs'
 import NewJob from '../../components/Jobs/NewJob/NewJob'
 import PauseModal from '../../components/PauseModal/PauseModal'
 
@@ -80,9 +80,8 @@ class Queue extends Component {
     }
   }
 
-  processJob = (id, processTime = null) => {
-    const timeLeft = processTime ? processTime : 500 + Math.random() * 15000
-
+  processJob = (id) => {
+    const timeLeft = 500 + Math.random() * 15000
     setTimeout(async () => {
       const body = { status: jobStatus.COMPLETED }
       await axios.patch(`/jobs/${id}`, body)
@@ -111,31 +110,12 @@ class Queue extends Component {
   }
 
   render() {
-    let jobsHTML = <h1 className="empty-queue">Please create a new job to run</h1>
-
     const queueClassList = ['Queue']
     const pauseButtonText = this.state.queueLocked ? 'Resume Queue' : 'Pause Queue'
     const pauseButtonClassName = this.state.queueLocked ? 'pause-queue locked' : 'pause-queue'
 
-    if (this.state.jobs.length > 0) {
-      jobsHTML = this.state.jobs.map((job, i) => {
-        return (
-          <Job
-            key={job.id}
-            id={job.id}
-            name={job.name}
-            program={job.program}
-            status={job.status}
-            submissionTime={job.submissionTime}
-            canceled={this.jobCanceledHandler}
-            jobIndex={i+1} />
-        )
-      })
-    }
-
     if (this.state.showModal) {
-      queueClassList.push('overlayed')
-      queueClassList.push('no-scroll')
+      queueClassList.push('overlayed', 'no-scroll')
     }
 
     const queueClassName = queueClassList.join(' ')
@@ -152,11 +132,9 @@ class Queue extends Component {
           showModal={this.state.showModal}
           accepted={this.acceptedPauseHandler}
           rejected={this.rejectedPauseHandler} />
-        <FlipMove
-          duration={750}
-          easing="ease-out"
-          enterAnimation={"fade"}
-          className="job-list">{jobsHTML}</FlipMove>
+        <Jobs
+          jobCanceled={this.jobCanceledHandler}
+          jobs={this.state.jobs}/>
         <div className="overlay"></div>
       </div>
     )

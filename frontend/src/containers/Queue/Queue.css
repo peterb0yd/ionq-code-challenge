@@ -1,8 +1,8 @@
 
 .Queue {
-  margin-top: 40px;
   width: 100vw;
   height: 100vh;
+  overflow-x: hidden;
 }
 
 .Queue.no-scroll {
@@ -25,11 +25,6 @@
 .Queue.overlayed .overlay {
   visibility: visible;
   opacity: 1;
-}
-
-.Queue .job-list {
-  width: 80%;
-  margin: 20px auto;
 }
 
 .Queue button.pause-queue {

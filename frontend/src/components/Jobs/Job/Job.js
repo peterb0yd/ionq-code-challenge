@@ -4,23 +4,31 @@ import { jobStatus } from '../../../config'
 import './Job.css'
 
 class Job extends Component {
-  interval = null
+  blinkInterval = null
+  waitInterval = null
   state = {
-    brightBorder: false
+    blinking: false,
+    waitTime: 0
   }
 
   componentDidMount() {
+    this.waitInterval = setInterval( () => {
+      this.setState({
+        waitTime: this.state.waitTime + 1
+      })
+    },1000)
+
     if (this.props.status === jobStatus.IN_PROGRESS) {
-      this.interval = setInterval(() => {
+      this.blinkInterval = setInterval(() => {
         this.setState({
-          brightBorder: !this.state.brightBorder
+          blinking: !this.state.blinking
         })
       }, 800)
     }
   }
 
   componentWillUnmount() {
-    clearInterval(this.interval)
+    clearInterval(this.blinkInterval)
   }
 
   pad = (num) => {
@@ -34,34 +42,17 @@ class Job extends Component {
   }
 
   render() {
-    let jobNumberHTML = null
-    const classList = ['Job']
+    const classList = ['Job', this.props.status]
 
-    if (this.state.brightBorder) {
-      classList.push('bright-border')
+    if (this.props.status === jobStatus.IN_PROGRESS) {
+      clearInterval(this.waitInterval)
     }
 
-    switch (this.props.status) {
-      case jobStatus.QUEUED:
-        classList.push('queued')
-        jobNumberHTML = <p className="jobNumber">Job: {this.pad(this.props.jobIndex)}</p>
-        break
-      case jobStatus.IN_PROGRESS:
-        classList.push('in-progress')
-        jobNumberHTML = <p className="jobNumber">Job: {this.pad(this.props.jobIndex)}</p>
-        break
-      case jobStatus.CANCELED:
-        classList.push('canceled')
-        break
-      case jobStatus.COMPLETED:
-        classList.push('completed')
-        break
-      default:
-        break
+    if (this.state.blinking) {
+      classList.push('blinking')
     }
 
     const className = classList.join(' ')
-    // const status = this.props.paused ? 'paused' : this.props.status
 
     return (
       <div className={className}>
@@ -69,7 +60,8 @@ class Job extends Component {
         <h2>{this.props.name}</h2>
         <h4>File: {this.props.program}</h4>
         <p className="time">{moment(this.props.submissionTime).format('lll')}</p>
-        {jobNumberHTML}
+        <p>Wait time: {this.state.waitTime} seconds</p>
+        <p className="jobNumber">Job: {this.pad(this.props.jobIndex)}</p>
         <button
           className="cancel"
           onClick={e => this.jobCanceledHandler(e)}>Cancel Job</button>

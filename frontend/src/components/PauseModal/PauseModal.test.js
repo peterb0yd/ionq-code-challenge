@@ -8,14 +8,6 @@ import PauseModal from './PauseModal'
 configure({ adapter: new Adapter() })
 
 describe('<PauseModal />', () => {
-  let wrapper = shallow(<PauseModal />)
-  it('should render a template with one h4 and two buttons', () => {
-    expect(wrapper.find('.container h4')).toHaveLength(1)
-    expect(wrapper.find('.container button')).toHaveLength(2)
-  })
-})
-
-describe('<PauseModal />', () => {
   let wrapper
 
   beforeEach(() => {

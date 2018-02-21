@@ -34,7 +34,7 @@
   margin-right: 0;
 }
 
-.Job.bright-border {
+.Job.blinking {
   border: 6px solid hsl(200, 100%, 80%);
 }
 
