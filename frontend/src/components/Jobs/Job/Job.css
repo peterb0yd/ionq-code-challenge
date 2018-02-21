@@ -1,10 +1,80 @@
 
 .Job {
-  background-color: hsla(200, 100%, 30%, 0.3);
-  width: 200px;
-  height: 300px;
-  border: 4px solid hsla(220, 100%, 30%, 0.5);
-  padding: 20px;
-  margin: 20px;
-  /*flex: 1;*/
+  float: left;
+  position: relative;
+  min-height: 300px;
+  width: 32%;
+  padding: 10px 20px;
+  box-sizing: border-box;
+  margin: 1%;
+  text-align: left;
+  transition: border 0.6s ease;
+}
+
+.Job.queued {
+  background-color: hsl(0, 0%, 90%);
+  border: 6px solid hsl(0, 0%, 82%);
+}
+
+.Job.in-progress {
+  background-color: hsl(200, 100%, 95%);
+  border: 6px solid hsl(200, 100%, 60%);
+}
+
+.Job.in-progress.paused {
+  background-color: hsl(200, 100%, 95%);
+  border: 6px solid hsl(200, 100%, 60%);
+}
+
+.Job:nth-child(3n+1) {
+  margin-left: 0;
+}
+
+.Job:nth-child(3n+3) {
+  margin-right: 0;
+}
+
+.Job.bright-border {
+  border: 6px solid hsl(200, 100%, 80%);
+}
+
+.Job h2 {
+  text-align: center;
+  font-size: 16pt;
+  color: hsl(0, 0%, 50%);
+  margin: 20px auto 10px;
+}
+
+.Job h4 {
+  font-size: 14pt;
+  color: hsl(0, 0%, 60%);
+  margin: 14px auto;
+}
+
+.Job .status {
+  text-align: center;
+  margin-bottom: 20px;
+  color: hsl(0, 0%, 70%);
+  font-style: italic;
+}
+
+.Job .jobNumber {
+  margin: 6px auto 20px auto;
+}
+
+.Job button.cancel {
+  background-color: hsl(0, 52%, 57%);
+  color: white;
+  cursor: pointer;
+  text-align: center;
+  width: 140px;
+  padding: 10px;
+  margin: 20px auto 12px auto;
+  font-size: 11pt;
+  font-weight: bold;
+  border: 5px solid hsl(0, 0%, 82%);
+}
+
+.Job button.cancel:hover {
+  background-color: hsl(0, 52%, 67%);
 }

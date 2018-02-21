@@ -1,0 +1,53 @@
+
+.PauseModal {
+  visibility: hidden;
+  position: absolute;
+  height: 60%;
+  width: 50%;
+  margin: auto;
+  padding: 50px;
+  left: 0; right: 0; top: 0; bottom: 0;
+  z-index: 100;
+  opacity: 0;
+  transition: all 0.5s ease;
+  background-color: hsl(0, 0%, 90%);
+  border: 6px solid hsl(0, 2%, 65%);
+}
+
+.PauseModal.show {
+  visibility: visible;
+  opacity: 1;
+}
+
+.PauseModal .container {
+  position: absolute;
+  height: 300px;
+  width: 60%;
+  margin: auto;
+  padding: 50px;
+  left: 0; right: 0; top: 0; bottom: 0;
+}
+
+.PauseModal h4 {
+  font-size: 24pt;
+  color: hsl(199, 98%, 58%);
+  margin: 40px auto;
+}
+
+.PauseModal button {
+  display: inline-block;
+  background-color: hsl(199, 100%, 68%);
+  color: white;
+  cursor: pointer;
+  text-align: center;
+  width: 200px;
+  padding: 16px 20px;
+  margin: 10px;
+  font-size: 14pt;
+  font-weight: bold;
+  border: 5px solid hsl(0, 0%, 82%);
+}
+
+.PauseModal button:hover {
+  background-color: hsl(199, 100%, 78%);
+}

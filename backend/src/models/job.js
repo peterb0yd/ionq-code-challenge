@@ -50,7 +50,7 @@ const Job = class {
       const jobs = []
       const readStream = db.createReadStream()
       readStream.on('data', data => {
-        if (_.includes(data.key, 'job'))
+        if (_.includes(data.key, 'job') && (data.value.status === jobStatus.QUEUED || data.value.status === jobStatus.IN_PROGRESS))
           jobs.push(getFields(data.value))
       })
       readStream.on('error', err => {

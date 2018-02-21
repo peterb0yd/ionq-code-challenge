@@ -1,9 +1,65 @@
 
 .Queue {
+  width: 100vw;
+  height: 100vh;
+  overflow-x: hidden;
+}
 
+.Queue.no-scroll {
+  overflow: hidden;
+}
+
+.Queue .overlay {
+  visibility: hidden;
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  z-index: 50;
+  background-color: hsla(0, 100%, 100%, 0.8);
+  transition: all 0.3s ease;
+}
+
+.Queue.overlayed .overlay {
+  visibility: visible;
+  opacity: 1;
 }
 
 .Queue .job-list {
-  display: flex;
-  align-items: center;
+  width: 80%;
+  margin: 20px auto;
+}
+
+.Queue button.pause-queue {
+  background-color: hsl(42, 54%, 50%);
+  border: none;
+  color: white;
+  cursor: pointer;
+  text-align: center;
+  width: 250px;
+  padding: 22px 24px;
+  font-size: 18pt;
+  margin: 30px auto 20px auto;
+  font-weight: bold;
+  border: 5px solid hsl(0, 0%, 82%);
+}
+
+.Queue button.pause-queue:hover {
+  background-color: hsl(42, 54%, 60%);
+}
+
+.Queue button.pause-queue.locked {
+  background-color: hsl(0, 32%, 46%);
+}
+
+.Queue button.pause-queue.locked:hover {
+  background-color: hsl(0, 32%, 56%);
+}
+
+.Queue h1.empty-queue {
+  font-size: 32pt;
+  color: hsl(0, 0%, 83%);
+  margin-top: 80px;
 }
